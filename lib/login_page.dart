@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:flutter_firebase/second_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase/sign_in.dart';
 import 'package:flutter_firebase/first_screen.dart';
@@ -12,36 +13,137 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  TextEditingController emailController = TextEditingController(text: "");
+  TextEditingController passwordController = TextEditingController(text: "");
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: Colors.white,
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              FlutterLogo(size: 150),
-              SizedBox(height: 50),
-              _signInButton(),
-            ],
-          ),
-        ),
+      appBar: AppBar(
+        title: const Text("Muhammad Zaki (2031710106)"),
       ),
+      body: ListView(children: [
+        Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const SizedBox(height: 20),
+            const FlutterLogo(size: 150),
+            Container(
+              alignment: Alignment.center,
+              margin: const EdgeInsets.only(left: 30, right: 30, top: 20),
+              child: TextFormField(
+                decoration: InputDecoration(
+                  labelText: "Email",
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0)),
+                ),
+                controller: emailController,
+              ),
+            ),
+            Container(
+              alignment: Alignment.center,
+              margin: const EdgeInsets.only(
+                  left: 30, right: 30, top: 10, bottom: 10),
+              child: TextFormField(
+                decoration: InputDecoration(
+                  labelText: "Password",
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0)),
+                ),
+                controller: passwordController,
+              ),
+            ),
+            Container(
+              alignment: Alignment.center,
+              margin: const EdgeInsets.only(left: 30, right: 30, bottom: 10),
+              child: ElevatedButton(
+                  child: const Text(
+                    "Sign In",
+                    style: TextStyle(
+                      color: Color.fromARGB(240, 255, 255, 255),
+                      fontSize: 20,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.blue,
+                    minimumSize: const Size(double.infinity, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                  ),
+                  onPressed: () async {
+                    await AuthSign.signIn(
+                            emailController.text, passwordController.text)
+                        .then((result) {
+                      if (result != null) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return SecondScreen();
+                            },
+                          ),
+                        );
+                      }
+                    });
+                  }),
+            ),
+            Container(
+              alignment: Alignment.center,
+              margin: const EdgeInsets.only(left: 30, right: 30, bottom: 10),
+              child: ElevatedButton(
+                  child: const Text(
+                    "Sign Up",
+                    style: TextStyle(
+                      color: Color.fromARGB(240, 255, 255, 255),
+                      fontSize: 20,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.green,
+                    minimumSize: const Size(double.infinity, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                  ),
+                  onPressed: () async {
+                    await AuthSign.signUp(
+                            emailController.text, passwordController.text)
+                        .then((result) {
+                      if (result != null) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return SecondScreen();
+                            },
+                          ),
+                        );
+                      }
+                    });
+                  }),
+            ),
+            Container(
+                margin: const EdgeInsets.only(bottom: 10),
+                child: const Text(
+                  "or",
+                  style: TextStyle(fontSize: 20),
+                )),
+            _signInButton(),
+          ],
+        ),
+      ]),
     );
   }
 
   Widget _signInButton() {
     return OutlineButton(
-      splashColor: Colors.grey,
+      splashColor: Colors.blue,
       onPressed: () {
         signInWithGoogle().then((result) {
           if (result != null) {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) {
-                  return const FirstScreen();
+                  return FirstScreen();
                 },
               ),
             );
@@ -50,21 +152,21 @@ class _LoginPageState extends State<LoginPage> {
       },
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
       highlightElevation: 0,
-      borderSide: BorderSide(color: Colors.grey),
+      borderSide: const BorderSide(color: Colors.blue),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          children: const <Widget>[
             // Image(image: AssetImage("assets/google_logo.png"), height: 35.0),
             Padding(
-              padding: const EdgeInsets.only(left: 10),
+              padding: EdgeInsets.only(left: 10),
               child: Text(
                 'Sign in with Google',
                 style: TextStyle(
                   fontSize: 20,
-                  color: Colors.grey,
+                  color: Colors.blue,
                 ),
               ),
             )
