@@ -1,16 +1,21 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase/sign_in.dart';
-import 'package:flutter_firebase/first_screen.dart';
+import 'package:flutter_firebase/Authentication/sign_in.dart';
+import 'package:flutter_firebase/Halaman/first_screen.dart';
+import 'second_screen.dart';
+import '../Authentication/authentication.dart';
 
+//MI-2F Jihan Rahadatul Aisy (2031710034)
 class LoginPage extends StatefulWidget {
+  const LoginPage({Key key}) : super(key: key);
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
-final TextEditingController _emailController = TextEditingController();
-final TextEditingController _passController = TextEditingController();
+TextEditingController _emailController = TextEditingController(text: "");
+TextEditingController _passController = TextEditingController(text: "");
 
 class _LoginPageState extends State<LoginPage> {
   @override
@@ -35,11 +40,6 @@ class _LoginPageState extends State<LoginPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20),
-                                  child: const Text('Email',
-                                      style: TextStyle(fontSize: 13))),
                               const SizedBox(height: 2),
                               Center(
                                 child: Container(
@@ -71,11 +71,6 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                               const SizedBox(height: 10),
-                              Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20),
-                                  child: const Text('Password',
-                                      style: TextStyle(fontSize: 13))),
                               const SizedBox(height: 2),
                               Center(
                                 child: Container(
@@ -107,26 +102,9 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                               const SizedBox(height: 20),
-                              Center(
-                                child: Container(
-                                  width: 320,
-                                  child: RaisedButton(
-                                    onPressed: () {},
-                                    child: const Text(
-                                      'Login',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    color: const Color(0xFF4f4f4f),
-                                    elevation: 0,
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 16,
-                                    ),
-                                  ),
-                                ),
-                              ),
+                              const _Loginbutton(),
+                              const SizedBox(height: 10),
+                              const _Registerbutton(),
                             ],
                           ),
                         ),
@@ -189,7 +167,6 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: const <Widget>[
-            Image(image: AssetImage("assets/google_logo.png"), height: 35.0),
             Padding(
               padding: EdgeInsets.only(left: 10),
               child: Text(
@@ -201,6 +178,106 @@ class _LoginPageState extends State<LoginPage> {
               ),
             )
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _Registerbutton extends StatelessWidget {
+  const _Registerbutton({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        width: 320,
+        child: RaisedButton(
+          onPressed: () async {
+            AuthenticationHelper()
+                .signUp(_emailController.text, _passController.text)
+                .then((result) {
+              if (result == null) {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SecondScreen(
+                              email: _emailController.text,
+                            )));
+              } else {
+                Scaffold.of(context).showSnackBar(SnackBar(
+                  content: Text(
+                    result,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ));
+              }
+            });
+          },
+          child: const Text(
+            'Register',
+            style: TextStyle(color: Colors.white),
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          color: const Color(0xFF4f4f4f),
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(
+            vertical: 16,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _Loginbutton extends StatelessWidget {
+  const _Loginbutton({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        width: 320,
+        child: RaisedButton(
+          onPressed: () async {
+            await AuthenticationHelper()
+                .signIn(_emailController.text, _passController.text)
+                .then((result) {
+              if (result == null) {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SecondScreen(
+                              email: _emailController.text,
+                            )));
+              } else {
+                Scaffold.of(context).showSnackBar(SnackBar(
+                  content: Text(
+                    result,
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ));
+              }
+            });
+          },
+          child: const Text(
+            'Login',
+            style: TextStyle(color: Colors.white),
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          color: const Color(0xFF4f4f4f),
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(
+            vertical: 16,
+          ),
         ),
       ),
     );
